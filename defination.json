@@ -1,0 +1,4786 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Seismic Content Manager API",
+    "version": "0.0.1",
+    "title": "Content Manager"
+  },
+  "basePath": "/api/contentManager/v1",
+  "schemes": [
+    "https"
+  ],
+  "parameters": {
+    "spaceNameParam": {
+      "in": "path",
+      "name": "spaceName",
+      "description": "Space Name",
+      "required": true,
+      "type": "string",
+      "default": "controlCenter"
+    },
+    "teamSiteParam": {
+      "in": "path",
+      "name": "teamSiteId",
+      "description": "TeamSite Id",
+      "required": true,
+      "type": "string",
+      "default": 1
+    },
+    "fieldParam": {
+      "in": "query",
+      "name": "fields",
+      "description": "Field expressio, fields=f1,f2...",
+      "required": false,
+      "type": "string"
+    },
+    "sortParam": {
+      "in": "query",
+      "name": "sort",
+      "description": "Sort expression, sort=k1:asc,k2:desc...",
+      "required": false,
+      "type": "string"
+    },
+    "offsetParam": {
+      "in": "query",
+      "name": "offset",
+      "description": "Offet of pagenation",
+      "required": false,
+      "type": "integer"
+    },
+    "limitParam": {
+      "in": "query",
+      "name": "limit",
+      "description": "Limit of pagenation",
+      "required": false,
+      "type": "integer"
+    }
+  },
+  "responses": {
+    "folderSuccess": {
+      "description": "successful operation",
+      "schema": {
+        "$ref": "#/definitions/folder"
+      }
+    },
+    "itemSuccess": {
+      "description": "successful operation",
+      "schema": {
+        "$ref": "#/definitions/item"
+      }
+    },
+    "itemNamesSuccess": {
+      "description": "successful operation",
+      "schema": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/existedItemName"
+        }
+      }
+    },
+    "fileSuccess": {
+      "description": "successful operation",
+      "schema": {
+        "$ref": "#/definitions/itemVersion"
+      }
+    },
+    "notFoundException": {
+      "description": "cannot find the specified resource",
+      "schema": {
+        "$ref": "#/definitions/notFoundApiException"
+      }
+    },
+    "badRequestException": {
+      "description": "bad request",
+      "schema": {
+        "$ref": "#/definitions/badRequestApiException"
+      }
+    }
+  },
+  "paths": {
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/viewers": {
+      "get": {
+        "tags": [
+          "identityInfo"
+        ],
+        "summary": "Get Viewer",
+        "description": "Get file viewer include user group",
+        "operationId": "getViewers",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "$ref": "#/parameters/limitParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "description": "search value",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/identityInfoModel"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/comments": {
+      "get": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "Get Comments",
+        "description": "",
+        "operationId": "getComments",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "$ref": "#/parameters/offsetParam"
+          },
+          {
+            "$ref": "#/parameters/limitParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/commentsPage"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{versionId}/comments": {
+      "post": {
+        "tags": [
+          "comment"
+        ],
+        "summary": "Add Comment",
+        "description": "",
+        "operationId": "addComment",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "description": "File Version Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "commentRequestModel",
+            "description": "new comment request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/commentRequestModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/commentsServiceModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/activities": {
+      "get": {
+        "tags": [
+          "activity"
+        ],
+        "summary": "Get Activities",
+        "description": "",
+        "operationId": "getActivities",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "$ref": "#/parameters/offsetParam"
+          },
+          {
+            "$ref": "#/parameters/limitParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/activiesPage"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/teamSitePermissions": {
+      "get": {
+        "tags": [
+          "teamSite permission"
+        ],
+        "summary": "Get TeamSite Permission",
+        "description": "Get teamSite permission by teamSiteId",
+        "operationId": "getTeamSitePermissions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/items/{itemId}/": {
+      "get": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Get Item",
+        "description": "Get item by fileds",
+        "operationId": "getItem",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "$ref": "#/parameters/fieldParam"
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Item Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/folder"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/sharedItems": {
+      "get": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Get Shared Items",
+        "description": "Get shared items in teamSite",
+        "operationId": "getSharedItems",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "$ref": "#/parameters/fieldParam"
+          },
+          {
+            "$ref": "#/parameters/sortParam"
+          },
+          {
+            "$ref": "#/parameters/offsetParam"
+          },
+          {
+            "$ref": "#/parameters/limitParam"
+          },
+          {
+            "in": "query",
+            "name": "includePermission",
+            "description": "whether to return unique permission of item",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/itemPage"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/items/{itemId}/breadcrumb": {
+      "get": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Get Breadcrumb",
+        "description": "Get breadcrumb for a item",
+        "operationId": "GetBreadcrumb",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/octet-stream",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "description": "Item Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Root, Level1, Level2 ... Leaf",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/breadCrumb"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/folders": {
+      "post": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Add Folder",
+        "description": "Add a folder in speicifed location",
+        "operationId": "addFolder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "body",
+            "name": "newFile",
+            "description": "New Folder Info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newFolderRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/folderSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/folders/{folderId}": {
+      "get": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Get Folder",
+        "description": "get folder in speicifed location",
+        "operationId": "getFolder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "description": "Folder Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "includePermission",
+            "description": "whether to return unique permission of folder",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/folderSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Delete Folder",
+        "description": "delete folder in speicifed location",
+        "operationId": "deleteFolder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "description": "Folder Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "folder Id"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/folders/{folderId}/move": {
+      "post": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Move Folder",
+        "description": "move a folder into speicifed location",
+        "operationId": "moveFolder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "description": "Folder Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newFile",
+            "description": "New Folder Info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moveCopyItemRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/folderSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/folders/{folderId}/copy": {
+      "post": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Copy Folder",
+        "description": "copy a folder into speicifed location",
+        "operationId": "copyFolder",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "description": "Folder Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newFile",
+            "description": "New Folder Info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moveCopyItemRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/folderSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/folders/{folderId}/subFolders": {
+      "get": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Get Subfolders",
+        "description": "Get subfolder of specified folder in a speicifed TeamSite",
+        "operationId": "getSubFolders",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "description": "Folder Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/folder"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/folders/{folderId}/items": {
+      "get": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Get Items",
+        "description": "Get items of specified folder in a speicifed folder",
+        "operationId": "getItems",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "$ref": "#/parameters/fieldParam"
+          },
+          {
+            "$ref": "#/parameters/sortParam"
+          },
+          {
+            "$ref": "#/parameters/offsetParam"
+          },
+          {
+            "$ref": "#/parameters/limitParam"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "description": "Folder Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "includePermission",
+            "description": "whether to return unique permission of item",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/itemPage"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/folders/{folderId}/checkName": {
+      "post": {
+        "tags": [
+          "folders"
+        ],
+        "summary": "Check File Name",
+        "description": "check the file name existence",
+        "operationId": "checkItemNamesIsExisted",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "description": "Folder Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "checkNamesRequestModel",
+            "description": "contains the item names intent to be used",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/checkNamesRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/itemNamesSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Add File",
+        "description": "add a file in speicifed location",
+        "operationId": "addFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "body",
+            "name": "newFile",
+            "description": "New File Info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newFileRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/itemSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Get File",
+        "description": "Get lastest version of a file in speicifed location",
+        "operationId": "getFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/fileSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Update File",
+        "description": "Update a file in speicifed location",
+        "operationId": "updateFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newFile",
+            "description": "New File Info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/updateFileRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/itemSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Delete File",
+        "description": "Delete a file in speicifed location",
+        "operationId": "deleteFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "File Id"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/move": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Move File",
+        "description": "move a file into speicifed location",
+        "operationId": "moveFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newFile",
+            "description": "New Folder Info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moveCopyItemRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/itemSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/copy": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Copy File",
+        "description": "copy a file into speicifed location",
+        "operationId": "copyFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newFile",
+            "description": "New Folder Info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/moveCopyItemRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/itemSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/checkout": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Checkout File",
+        "description": "checkout a file into speicifed location",
+        "operationId": "CheckoutFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/uncheckout": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "UnCheckout File",
+        "description": "uncheckout a file into speicifed location",
+        "operationId": "UnCheckoutFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/experts": {
+      "get": {
+        "tags": [
+          "file-extension"
+        ],
+        "summary": "Get Experts",
+        "description": "update all experts of file. ",
+        "operationId": "getFileExperts",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/expert"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "file-extension"
+        ],
+        "summary": "Add Experts",
+        "description": "add experts ",
+        "operationId": "addFileExperts",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newFileExpert",
+            "description": "add new file expert",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/expert"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/expert"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/owner": {
+      "post": {
+        "tags": [
+          "file-extension"
+        ],
+        "summary": "Update Owner",
+        "description": "update owner",
+        "operationId": "updateOwner",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "updateFileOwner",
+            "description": "update file owner",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/updateOwnerServiceModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/systemIdentityServiceModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/customProperties": {
+      "get": {
+        "tags": [
+          "file-extension"
+        ],
+        "summary": "Get Custom Properties",
+        "description": "get all custom properties of file.",
+        "operationId": "GetFileCustomProperties",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customPropertyValue"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/customProperties/{customPropertyId}": {
+      "post": {
+        "tags": [
+          "file-extension"
+        ],
+        "summary": "Update Custom Property",
+        "description": "update specific custom property of file.",
+        "operationId": "UpdateFileCustomProperty",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "file Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "customPropertyId",
+            "description": "custom property id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "customPropertyRequestModel",
+            "description": "custom property request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/customPropertyRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/updateCustomPropertyService"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{versionId}": {
+      "get": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Get File Version",
+        "description": "In ControlCenter, the return value will include Experts and CustomProperties. More details, please see expert and customProperty in model defintions.",
+        "operationId": "getFileVersion",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "description": "File Version Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "includePermission",
+            "description": "whether to return unique permission of folder",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/fileSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Delete File Version",
+        "description": "delete version of a file",
+        "operationId": "deleteFileVersion",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "description": "File Version Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "FileVersion Id"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/minorVersions": {
+      "delete": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Delete Minor Versions",
+        "description": "delete minor versions of a file",
+        "operationId": "deleteMinorVersion",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Deleted File Version Ids"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/latest": {
+      "get": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Get Latest File Version",
+        "description": "In ControlCenter, the return value will include Experts and CustomProperties. More details, please see expert and customProperty in model defintions.",
+        "operationId": "getLastestVersionFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "name": "includePermission",
+            "description": "whether to return unique permission of file",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/fileSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions": {
+      "post": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Add File Version",
+        "description": "Add a new version of a file",
+        "operationId": "addFileVersion",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newFileVersionRequestModel",
+            "description": "new file version request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newFileVersionRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/responses/fileSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Get Simple File Versions",
+        "description": "",
+        "operationId": "getSimpleFileVersions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/simpleFileVersion"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{versionId}/thumbnail": {
+      "post": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Update Thumbnail",
+        "description": "Update version thumbnail",
+        "operationId": "updateFileVersionThumbnail",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "description": "File Version Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "thumbnailBase64String",
+            "description": "Thumbnail Base64 String",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "New thumbnail blob id"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{versionId}/description": {
+      "post": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Update Description",
+        "description": "",
+        "operationId": "updateFileVersionDescription",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "description": "File Version Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "description",
+            "description": "Description",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "updated version id"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{versionId}/internalNotes": {
+      "post": {
+        "tags": [
+          "files-versions"
+        ],
+        "summary": "Update Internal Notes",
+        "description": "",
+        "operationId": "updateFileVersionInternalNotes",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "description": "File Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "description": "File Version Id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "internalNotes",
+            "description": "Internal Notes",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "type": "string"
+            },
+            "description": "updated version id"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/publishStatus": {
+      "get": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Gets File Publish Status",
+        "description": "",
+        "operationId": "getPublishStatusByFileId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "query",
+            "name": "publishedProfileOnly",
+            "required": false,
+            "type": "boolean",
+            "description": "Is Profile Published"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published information list of file and pending publish information list of file",
+            "schema": {
+              "$ref": "#/definitions/filePublishStatus"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{fileVersionId}/publishStatus": {
+      "get": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Gets File Version Publish Status",
+        "description": "",
+        "operationId": "getPublishStatusByFileVersionId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "path",
+            "name": "fileVersionId",
+            "required": true,
+            "type": "string",
+            "description": "File Version Id"
+          },
+          {
+            "in": "query",
+            "name": "publishedProfileOnly",
+            "required": false,
+            "type": "boolean",
+            "description": "Is Profile Published"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published information list of file and pending publish information list of file",
+            "schema": {
+              "$ref": "#/definitions/filePublishStatus"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{fileVersionId}/publish": {
+      "post": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Publish File Version",
+        "description": "",
+        "operationId": "publishFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "path",
+            "name": "fileVersionId",
+            "required": true,
+            "type": "string",
+            "description": "File Version Id"
+          },
+          {
+            "in": "body",
+            "name": "publishFileRequestModel",
+            "description": "publis file request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/publishFileRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/publishResponseModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{fileVersionId}/schedulePublish": {
+      "post": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Schedule Publish File",
+        "operationId": "schedulePublishFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "path",
+            "name": "fileVersionId",
+            "required": true,
+            "type": "string",
+            "description": "File Version Id"
+          },
+          {
+            "in": "body",
+            "name": "schedulePublishFileRequestModel",
+            "description": "schedule publish file request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/schedulePublishFileRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/schedulePublishResponseModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/schedulePublishTasks/{schedulePublishTaskId}": {
+      "delete": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Delete Schedule Publish",
+        "description": "Delete specific localtion in the schedule publish. If the delete is last location in the schedule publish, the entire publish task will be deleted",
+        "operationId": "deleteSchedulePublish",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "schedulePublishTaskId",
+            "required": true,
+            "type": "string",
+            "description": "schedule publish task id"
+          },
+          {
+            "in": "body",
+            "name": "deleteSchedulePublishRequestModel",
+            "description": "delete schedule publish request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/deleteSchedulePublishRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Return to specific operation state model.",
+            "schema": {
+              "$ref": "#/definitions/changeFileSchedulePublishServiceModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/schedulePublishTasks/{schedulePublishTaskId}/publishTime": {
+      "post": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Update Publish Time",
+        "description": "Modify schedule time of publish task.",
+        "operationId": "changeSchedulePublishTime",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "schedulePublishTaskId",
+            "required": true,
+            "type": "string",
+            "description": "schedule publish task id"
+          },
+          {
+            "in": "body",
+            "name": "changeSchedulePublishTimeRequestModel",
+            "description": "change schedule publish time request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/changeSchedulePublishTimeRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Return to specific operation state model.",
+            "schema": {
+              "$ref": "#/definitions/changeFileSchedulePublishServiceModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/schedulePublishTasks/{schedulePublishTaskId}/publishLocation": {
+      "post": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Update Publish Location",
+        "description": "Modify schedule location of publish task.",
+        "operationId": "changeSchedulePublishLocation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "schedulePublishTaskId",
+            "required": true,
+            "type": "string",
+            "description": "schedule publish task id"
+          },
+          {
+            "in": "body",
+            "name": "changeSchedulePublishLocationRequestModel",
+            "description": "change schedule publish location request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/changeSchedulePublishLocationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Return to specific operation state model.",
+            "schema": {
+              "$ref": "#/definitions/changeFileSchedulePublishServiceModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/promote": {
+      "post": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Promte Files",
+        "description": "promote file(s)",
+        "operationId": "promote",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "body",
+            "name": "promoteRequestModel",
+            "description": "promote request model",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/promoteRequestModel"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/promoteResponseModel"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{fileVersionId}/promote": {
+      "post": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Promote File",
+        "description": "Promote a single file",
+        "operationId": "promoteFile",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "path",
+            "name": "fileVersionId",
+            "required": true,
+            "type": "string",
+            "description": "File Version Id"
+          },
+          {
+            "in": "body",
+            "name": "promoteRequestModel",
+            "description": "promote request model",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/promoteRequestModel"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/promoteResponseModel"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/unpublish": {
+      "post": {
+        "tags": [
+          "files-publish"
+        ],
+        "summary": "Unpublish Files",
+        "description": "Unpublish file(s) from profile(s)",
+        "operationId": "unpublish",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "body",
+            "name": "unpublishRequestModel",
+            "description": "unpublish request model",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/unpublishRequestModel"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/urls": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Add Url",
+        "description": "add a url in speicifed location",
+        "operationId": "addUrl",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "body",
+            "name": "newUrl",
+            "description": "New url information",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newUrlRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/responses/itemSuccess"
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/urls/{urlFileId}": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Update Url",
+        "description": "update a url file",
+        "operationId": "updateUrl",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "urlFileId",
+            "description": "file Id of the url",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "newUrl",
+            "description": "url information to update",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newUrlRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New file version Id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/urls/retrieveMetadata": {
+      "post": {
+        "tags": [
+          "urls"
+        ],
+        "summary": "Retrieve Url Metadata",
+        "description": "action to retrieve a url's metadata",
+        "operationId": "retrieveUrlMetadata",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "in": "body",
+            "name": "urlRetrieveRequestModel",
+            "description": "urlRetrieveRequestModel",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/urlRetrieveRequestModel"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/urlMetadata"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/": {
+      "get": {
+        "tags": [
+          "team-site"
+        ],
+        "summary": "Get TeamSites",
+        "description": "Get all TeamSites in tenant",
+        "operationId": "getTeamSites",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/teamSiteSimple"
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}": {
+      "get": {
+        "tags": [
+          "team-site"
+        ],
+        "summary": "Get TeamSite",
+        "description": "Get TeamSite by id",
+        "operationId": "getTeamSite",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/teamSite"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/customProperties": {
+      "get": {
+        "tags": [
+          "team-site"
+        ],
+        "summary": "Get TeamSite Custom Properties",
+        "description": "Get custom properties by TeamSite id",
+        "operationId": "getTeamsiteCustomProperties",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customProperty"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/users/{userId}/teamSites": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get User's TeamSites",
+        "description": "get user's belong TeamSites",
+        "operationId": "getUsetTeamSites",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "in": "path",
+            "name": "userId",
+            "description": "User Id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/teamSite"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{fileVersionId}/preview": {
+      "post": {
+        "tags": [
+          "files-annotations"
+        ],
+        "summary": "Generate Preview",
+        "operationId": "createFileAnnotationBoard",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "path",
+            "name": "fileVersionId",
+            "required": true,
+            "type": "string",
+            "description": "File Version Id"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "File Annotation board information",
+            "schema": {
+              "$ref": "#/definitions/fileAnnotation"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "files-annotations"
+        ],
+        "summary": "Get Preview",
+        "description": "",
+        "operationId": "getFileAnnotations",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "path",
+            "name": "fileVersionId",
+            "required": true,
+            "type": "string",
+            "description": "File Version Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "File Annotations and board information",
+            "schema": {
+              "$ref": "#/definitions/fileAnnotation"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/annotations": {
+      "post": {
+        "tags": [
+          "annotations"
+        ],
+        "summary": "Save Annotations",
+        "description": "Save annotation information by file page id.",
+        "operationId": "saveAnnotation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "body",
+            "name": "newAnnotation",
+            "description": "New annotation information",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/newAnnotationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "successful operation",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/annotations/{annotationId}": {
+      "delete": {
+        "tags": [
+          "annotations"
+        ],
+        "summary": "Delete Annotation",
+        "description": "delete annotation by annotation id",
+        "operationId": "deleteAnnotation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "annotationId",
+            "required": true,
+            "type": "string",
+            "description": "Annotation Id"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/profiles": {
+      "get": {
+        "tags": [
+          "profiles"
+        ],
+        "summary": "Get Profiles",
+        "description": "Get TeamSite latest profiles",
+        "operationId": "getLatestProfiles",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "query",
+            "name": "published",
+            "required": false,
+            "type": "boolean",
+            "description": "Is Profile Published"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/profile"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/profiles/{profileId}/versions/{versionId}/folders/{folderId}/subStaticFolders": {
+      "get": {
+        "tags": [
+          "profiles"
+        ],
+        "summary": "Get Profile Sub Static Folders",
+        "description": "",
+        "operationId": "getProfileSubFolders",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "profileId",
+            "required": true,
+            "type": "string",
+            "description": "Profile Id"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "type": "string",
+            "description": "Profile Version Id"
+          },
+          {
+            "in": "path",
+            "name": "folderId",
+            "required": true,
+            "type": "string",
+            "description": "Profile Folder Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/profileFolder"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    },
+    "/spaces/{spaceName}/teamSites/{teamSiteId}/files/{fileId}/versions/{versionId}/renditions": {
+      "get": {
+        "tags": [
+          "renditions"
+        ],
+        "summary": "Get Renditions",
+        "description": "get renditin infos of a file.",
+        "operationId": "getRenditions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/parameters/spaceNameParam"
+          },
+          {
+            "$ref": "#/parameters/teamSiteParam"
+          },
+          {
+            "in": "path",
+            "name": "fileId",
+            "required": true,
+            "type": "string",
+            "description": "File Id"
+          },
+          {
+            "in": "path",
+            "name": "versionId",
+            "required": true,
+            "type": "string",
+            "description": "File Version Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/rendition"
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/responses/badRequestException"
+          },
+          "404": {
+            "$ref": "#/responses/notFoundException"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "identityInfoModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "PhotoThumbnailId": {
+          "type": "string"
+        },
+        "FirstName": {
+          "type": "string"
+        },
+        "LastName": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string",
+          "enum": [
+            "User",
+            "Group"
+          ]
+        }
+      }
+    },
+    "commentRequestModel": {
+      "type": "object",
+      "properties": {
+        "ParentId": {
+          "type": "string"
+        },
+        "Message": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string",
+          "enum": [
+            "Ordinary",
+            "Annotation"
+          ]
+        },
+        "PageId": {
+          "type": "string"
+        },
+        "PageIndex": {
+          "type": "string"
+        }
+      }
+    },
+    "commentsPage": {
+      "type": "object",
+      "properties": {
+        "Offset": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Sort": {
+          "type": "string",
+          "description": "sort expression sort=k1:asc,k2:desc..."
+        },
+        "Items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/commentsServiceModel"
+          }
+        }
+      }
+    },
+    "commentsServiceModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "UserId": {
+          "type": "string"
+        },
+        "UserName": {
+          "type": "string"
+        },
+        "FirstName": {
+          "type": "string"
+        },
+        "LastName": {
+          "type": "string"
+        },
+        "Message": {
+          "type": "string"
+        },
+        "CreateDate": {
+          "type": "string"
+        },
+        "UserThumbnailId": {
+          "type": "string"
+        },
+        "PageThumbnailId": {
+          "type": "string"
+        },
+        "PageIndex": {
+          "type": "string"
+        },
+        "PageId": {
+          "type": "string"
+        }
+      }
+    },
+    "activiesPage": {
+      "type": "object",
+      "properties": {
+        "Offset": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Sort": {
+          "type": "string",
+          "description": "sort expression sort=k1:asc,k2:desc..."
+        },
+        "Items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/activityModelServiceModel"
+          }
+        }
+      }
+    },
+    "activityModelServiceModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "UserId": {
+          "type": "string"
+        },
+        "UserName": {
+          "type": "string"
+        },
+        "FirstName": {
+          "type": "string"
+        },
+        "LastName": {
+          "type": "string"
+        },
+        "ActionTime": {
+          "type": "string"
+        },
+        "ActionType": {
+          "type": "string"
+        },
+        "ObjectType": {
+          "type": "string"
+        },
+        "PhotoThumbnailId": {
+          "type": "string"
+        },
+        "ObjectVersion": {
+          "type": "string"
+        },
+        "ObjectVersionId": {
+          "type": "string"
+        },
+        "Attributes": {
+          "type": "object",
+          "description": "Models maybe different depending on ActionType"
+        },
+        "Details": {
+          "type": "object",
+          "description": "actually this type is array,but there are more than one models will in array,but swagger can't support this case,so use object instead of array.Models maybe different depending on ActionType"
+        }
+      }
+    },
+    "badRequestApiException": {
+      "type": "object",
+      "properties": {
+        "ErrorCode": {
+          "type": "string",
+          "enum": [
+            "UnknownBadReqeustApiExpcetion"
+          ]
+        },
+        "ErrorMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "breadCrumb": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "ParentId": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "BreadCrumb"
+      }
+    },
+    "checkNamesRequest": {
+      "type": "object",
+      "properties": {
+        "Names": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "xml": {
+        "name": "CheckNamesRequestModel"
+      }
+    },
+    "customProperty": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "TeamSiteId": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "IsRequired": {
+          "type": "boolean"
+        },
+        "Type": {
+          "type": "string"
+        },
+        "DomainOfValues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "OrderIndex": {
+          "type": "integer"
+        }
+      },
+      "xml": {
+        "name": "CustomProperty"
+      }
+    },
+    "customPropertyValue": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "xml": {
+        "name": "CustomPropertyValue"
+      }
+    },
+    "existedItemName": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "IsFolder": {
+          "type": "boolean"
+        }
+      },
+      "xml": {
+        "name": "ItemName"
+      }
+    },
+    "expert": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "FirstName": {
+          "type": "string"
+        },
+        "LastName": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string",
+          "enum": [
+            "User",
+            "Group"
+          ]
+        }
+      },
+      "xml": {
+        "name": "Expert"
+      }
+    },
+    "filePublishScheduledTask": {
+      "type": "object",
+      "properties": {
+        "PublishTaskId": {
+          "type": "string"
+        },
+        "ProfileId": {
+          "type": "string"
+        },
+        "ProfileName": {
+          "type": "string"
+        },
+        "ProfileVersionId": {
+          "type": "string"
+        },
+        "ProfileVersionName": {
+          "type": "string"
+        },
+        "MajorVersion": {
+          "type": "integer"
+        },
+        "MinorVersion": {
+          "type": "integer"
+        },
+        "PublishTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/profileFolders"
+          }
+        }
+      }
+    },
+    "filePublishStatus": {
+      "type": "object",
+      "properties": {
+        "PublishedInfos": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/filePublishedInfo"
+          }
+        },
+        "ScheduledTasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/filePublishScheduledTask"
+          }
+        }
+      }
+    },
+    "filePublishedInfo": {
+      "type": "object",
+      "properties": {
+        "ProfileId": {
+          "type": "string"
+        },
+        "ProfileName": {
+          "type": "string"
+        },
+        "ProfileVersionId": {
+          "type": "string"
+        },
+        "ProfileVersionName": {
+          "type": "string"
+        },
+        "FileId": {
+          "type": "string"
+        },
+        "FileVersionId": {
+          "type": "string"
+        },
+        "MajorVersion": {
+          "type": "integer"
+        },
+        "MinorVersion": {
+          "type": "integer"
+        },
+        "Locations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/profileFolders"
+          }
+        }
+      }
+    },
+    "folder": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "TeamSiteId": {
+          "type": "string"
+        },
+        "IsShared": {
+          "type": "boolean"
+        },
+        "SubFolderCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "IsShortcut": {
+          "type": "boolean"
+        },
+        "MetaData": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/keyValueObj"
+          }
+        }
+      },
+      "xml": {
+        "name": "Folder"
+      }
+    },
+    "itemPage": {
+      "type": "object",
+      "properties": {
+        "Offset": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Limit": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Count": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "Sort": {
+          "type": "string",
+          "description": "sort expression sort=k1:asc,k2:desc..."
+        },
+        "Items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/item"
+          }
+        }
+      },
+      "xml": {
+        "name": "ItemPage"
+      }
+    },
+    "item": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "TeamSiteId": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string"
+        },
+        "Format": {
+          "type": "string"
+        },
+        "IsShortcut": {
+          "type": "boolean"
+        },
+        "IsCheckedOut": {
+          "type": "boolean"
+        },
+        "CheckedOutUserId": {
+          "type": "string"
+        },
+        "MetaData": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/keyValueObj"
+          }
+        }
+      },
+      "xml": {
+        "name": "Item"
+      }
+    },
+    "itemVersion": {
+      "type": "object",
+      "allOf": [
+        {
+          "title": "itemVersion"
+        },
+        {
+          "$ref": "#/definitions/item"
+        },
+        {
+          "properties": {
+            "VersionId": {
+              "type": "string"
+            },
+            "MajorVersionNumber": {
+              "type": "integer"
+            },
+            "MinorVersionNumber": {
+              "type": "integer"
+            },
+            "Description": {
+              "type": "string"
+            },
+            "ExpiredTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "LastModifiedTime": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "Owner": {
+              "type": "object",
+              "properties": {
+                "Id": {
+                  "type": "string"
+                },
+                "Type": {
+                  "type": "string",
+                  "enum": [
+                    "User",
+                    "UserGroup"
+                  ]
+                },
+                "Name": {
+                  "type": "string"
+                },
+                "FirstName": {
+                  "type": "string"
+                },
+                "LastName": {
+                  "type": "string"
+                },
+                "PhotoThumbnailId": {
+                  "type": "string"
+                }
+              }
+            },
+            "SourceBlobId": {
+              "type": "string"
+            },
+            "ThumbnailBlobId": {
+              "type": "string"
+            },
+            "CheckedOutUserName": {
+              "type": "string"
+            },
+            "Experts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "InternalNotes": {
+              "type": "string"
+            },
+            "ApprovalStatus": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "xml": {
+        "name": "ItemVersion"
+      }
+    },
+    "keyValueObj": {
+      "type": "object",
+      "properties": {
+        "Key": {
+          "type": "string"
+        },
+        "Value": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "KeyValueObj"
+      }
+    },
+    "linkUrl": {
+      "type": "object",
+      "title": "linkUrl",
+      "allOf": [
+        {
+          "$ref": "#/definitions/urlMetadata"
+        },
+        {
+          "type": "object",
+          "title": "linkUrl",
+          "properties": {
+            "Type": {
+              "$ref": "#/definitions/urlType"
+            },
+            "OpenIn": {
+              "type": "string",
+              "enum": [
+                "NewBrowser",
+                "Dialog"
+              ]
+            }
+          }
+        }
+      ],
+      "xml": {
+        "name": "LinkUrl"
+      }
+    },
+    "moveCopyItemRequest": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "DestinationFolderId": {
+          "type": "string",
+          "description": "StaticFolder or Shortcut Folder Id"
+        }
+      },
+      "xml": {
+        "name": "MoveCopyItem"
+      }
+    },
+    "newFileRequest": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Format": {
+          "type": "string"
+        },
+        "ParentFolderId": {
+          "type": "string",
+          "description": "StaticFolder or Shortcut Folder Id"
+        },
+        "UploadedBlobId": {
+          "type": "string",
+          "description": "Uploaded Blob Id"
+        },
+        "IsAutoRename": {
+          "type": "boolean",
+          "description": "Is Auto Rename is name is already eixsted"
+        },
+        "ThumbnailBlobId": {
+          "type": "string",
+          "description": "Thumbnail blob id"
+        },
+        "FileType": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string",
+          "description": "Description of the file"
+        },
+        "MetaData": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/keyValueObj"
+          }
+        }
+      },
+      "xml": {
+        "name": "NewFileRequestModel"
+      }
+    },
+    "newFileVersionRequest": {
+      "type": "object",
+      "properties": {
+        "UploadedBlobId": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "NewFileVersionRequestModel"
+      }
+    },
+    "newFolderRequest": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "ParentFolderId": {
+          "type": "string",
+          "description": "StaticFolder or Shortcut Folder Id"
+        }
+      },
+      "xml": {
+        "name": "NewFolderRequestModel"
+      }
+    },
+    "newUrlRequest": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/linkUrl"
+        },
+        {
+          "type": "object",
+          "title": "newUrlRequestModel",
+          "properties": {
+            "ParentFolderId": {
+              "type": "string",
+              "description": "StaticFolder or Shortcut Folder Id"
+            }
+          }
+        }
+      ],
+      "xml": {
+        "name": "NewUrlRequestModel"
+      }
+    },
+    "notFoundApiException": {
+      "type": "object",
+      "properties": {
+        "ErrorCode": {
+          "type": "string",
+          "enum": [
+            "FolderNotFoundApiException",
+            "TeamSiteNotFoundApiException",
+            "FileNotFoundApiException",
+            "ItemNotFoundApiException",
+            "UserNotFoundApiException",
+            "UnknownNotFoundApiExpcetion"
+          ]
+        },
+        "ErrorMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "teamSiteSimple": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "IsDefault": {
+          "type": "boolean"
+        }
+      },
+      "xml": {
+        "name": "TeamSite"
+      }
+    },
+    "teamSite": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "IsDefault": {
+          "type": "boolean"
+        },
+        "SupportedItemFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "xml": {
+        "name": "TeamSite"
+      }
+    },
+    "urlMetadata": {
+      "type": "object",
+      "properties": {
+        "Url": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "Thumbnail": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UrlMetadata"
+      }
+    },
+    "urlRetrieveRequestModel": {
+      "type": "object",
+      "properties": {
+        "Url": {
+          "type": "string"
+        },
+        "Type": {
+          "$ref": "#/definitions/urlType"
+        }
+      },
+      "xml": {
+        "name": "UrlRetrieveRequestModel"
+      }
+    },
+    "urlType": {
+      "type": "string",
+      "enum": [
+        "Url",
+        "Youtube",
+        "Vimeo"
+      ]
+    },
+    "updateFileRequest": {
+      "type": "object",
+      "properties": {
+        "UploadedBlobId": {
+          "type": "string",
+          "description": "Uploaded Blob Id"
+        }
+      },
+      "xml": {
+        "name": "UpdateFileRequestModel"
+      }
+    },
+    "simpleFileVersion": {
+      "type": "object",
+      "properties": {
+        "VersionId": {
+          "type": "string"
+        },
+        "MajorVersionNumber": {
+          "type": "integer"
+        },
+        "MinorVersionNumber": {
+          "type": "integer"
+        },
+        "CreateTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "anchor": {
+      "type": "object",
+      "properties": {
+        "X": {
+          "type": "number"
+        },
+        "Y": {
+          "type": "number"
+        }
+      }
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "X": {
+          "type": "number"
+        },
+        "Y": {
+          "type": "number"
+        }
+      }
+    },
+    "textInfo": {
+      "type": "object",
+      "properties": {
+        "Color": {
+          "type": "string"
+        },
+        "Width": {
+          "type": "number"
+        },
+        "FontSize": {
+          "type": "integer"
+        },
+        "Text": {
+          "type": "string"
+        },
+        "Point": {
+          "$ref": "#/definitions/point"
+        }
+      }
+    },
+    "coordinates": {
+      "type": "object",
+      "properties": {
+        "Start": {
+          "$ref": "#/definitions/point"
+        },
+        "End": {
+          "$ref": "#/definitions/point"
+        }
+      }
+    },
+    "strock": {
+      "type": "object",
+      "properties": {
+        "Color": {
+          "type": "string"
+        },
+        "Width": {
+          "type": "string"
+        },
+        "Endpoints": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/coordinates"
+          }
+        }
+      }
+    },
+    "annotation": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "GroupId": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "integer"
+        },
+        "LayerName": {
+          "type": "string"
+        },
+        "Timestamp": {
+          "type": "number"
+        },
+        "Duration": {
+          "type": "number"
+        },
+        "ZIndex": {
+          "type": "integer"
+        },
+        "TextInfo": {
+          "$ref": "#/definitions/textInfo"
+        },
+        "Url": {
+          "type": "string"
+        },
+        "Caption": {
+          "type": "string"
+        },
+        "Anchor": {
+          "$ref": "#/definitions/anchor"
+        },
+        "StrokeType": {
+          "type": "integer"
+        },
+        "Strock": {
+          "$ref": "#/definitions/strock"
+        },
+        "Tag": {
+          "type": "string"
+        },
+        "Color": {
+          "type": "string"
+        },
+        "Width": {
+          "type": "string"
+        },
+        "ParentId": {
+          "type": "string"
+        },
+        "PageNumber": {
+          "type": "integer"
+        },
+        "DateCreated": {
+          "type": "string"
+        }
+      }
+    },
+    "comment": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "ParentId": {
+          "type": "string"
+        },
+        "FileId": {
+          "type": "string"
+        },
+        "FileVersionId": {
+          "type": "string"
+        },
+        "CreateUserId": {
+          "type": "string"
+        },
+        "CreateUserName": {
+          "type": "string"
+        },
+        "CreateTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Comment": {
+          "type": "string"
+        },
+        "IsResolved": {
+          "type": "boolean"
+        },
+        "AnnotationId": {
+          "type": "string"
+        }
+      }
+    },
+    "page": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Title": {
+          "type": "string"
+        },
+        "Text": {
+          "type": "string"
+        },
+        "ImageUrl": {
+          "type": "string"
+        },
+        "PreviewImageUrl": {
+          "type": "string"
+        },
+        "Annotations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/annotation"
+          }
+        },
+        "Comments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/comment"
+          }
+        },
+        "NextEnabled": {
+          "type": "boolean"
+        },
+        "PreviousEnabled": {
+          "type": "boolean"
+        },
+        "Index": {
+          "type": "integer"
+        },
+        "Count": {
+          "type": "integer"
+        },
+        "PdfPageNumber": {
+          "type": "integer"
+        },
+        "Type": {
+          "type": "integer"
+        },
+        "WhiteboardType": {
+          "type": "integer"
+        },
+        "PendingComment": {
+          "type": "string"
+        }
+      }
+    },
+    "container": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Description": {
+          "type": "string"
+        },
+        "LogId": {
+          "type": "string"
+        },
+        "CreateTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Pages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/page"
+          }
+        }
+      }
+    },
+    "fileAnnotation": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Container": {
+          "$ref": "#/definitions/container"
+        }
+      }
+    },
+    "newAnnotationRequest": {
+      "type": "object",
+      "properties": {
+        "PageId": {
+          "type": "string"
+        },
+        "GroupId": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "integer"
+        },
+        "Timestamp": {
+          "type": "number"
+        },
+        "Duration": {
+          "type": "number"
+        },
+        "ZIndex": {
+          "type": "integer"
+        },
+        "TextInfo": {
+          "$ref": "#/definitions/textInfo"
+        },
+        "Url": {
+          "type": "string"
+        },
+        "Caption": {
+          "type": "string"
+        },
+        "Anchor": {
+          "$ref": "#/definitions/anchor"
+        },
+        "StrokeType": {
+          "type": "integer"
+        },
+        "Strock": {
+          "$ref": "#/definitions/strock"
+        },
+        "Tag": {
+          "type": "string"
+        },
+        "Color": {
+          "type": "string"
+        },
+        "Width": {
+          "type": "string"
+        },
+        "ParentId": {
+          "type": "string"
+        },
+        "PageNumber": {
+          "type": "integer"
+        }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "VersionId": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "VersionName": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string",
+          "enum": [
+            "ContentProfile",
+            "ChannelProfile"
+          ]
+        },
+        "IsPublished": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Profiles"
+      }
+    },
+    "profileFolder": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "SubFolderCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "profileFolders": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/profileFolder"
+      }
+    },
+    "rendition": {
+      "type": "object",
+      "properties": {
+        "Type": {
+          "type": "string",
+          "enum": [
+            "Thumbnail",
+            "PreviewImages",
+            "Video",
+            "PDF"
+          ]
+        },
+        "SubType": {
+          "type": "string",
+          "enum": [
+            "Video_Azure",
+            "Video_Vimo",
+            "Video_Youtube"
+          ]
+        },
+        "BlobIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "URLs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "publishFileToProfileRequest": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "VersionId": {
+          "type": "string"
+        },
+        "NewFolderIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "publishFileRequest": {
+      "type": "object",
+      "properties": {
+        "Profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/publishFileToProfileRequest"
+          }
+        }
+      }
+    },
+    "schedulePublishFileRequest": {
+      "type": "object",
+      "properties": {
+        "PublishTime": {
+          "type": "string"
+        },
+        "TimeZone": {
+          "type": "string"
+        },
+        "Profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/publishFileToProfileRequest"
+          }
+        }
+      }
+    },
+    "promoteRequestModel": {
+      "type": "object",
+      "properties": {
+        "itemId": {
+          "type": "string"
+        },
+        "isFolder": {
+          "type": "boolean"
+        },
+        "comment": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "PromoteRequestModel"
+      }
+    },
+    "unpublishRequestModel": {
+      "type": "object",
+      "properties": {
+        "ProfileId": {
+          "type": "string"
+        },
+        "ProfileVersionId": {
+          "type": "string"
+        },
+        "FileId": {
+          "type": "string"
+        },
+        "FileVersionId": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "UnpublishRequestModel"
+      }
+    },
+    "publishResponseModel": {
+      "type": "object",
+      "properties": {
+        "fileVersionId": {
+          "type": "string"
+        },
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "xml": {
+        "name": "PublishResponseModel"
+      }
+    },
+    "schedulePublishResponseModel": {
+      "type": "object",
+      "properties": {
+        "fileVersionId": {
+          "type": "string"
+        },
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "xml": {
+        "name": "SchedulePublishResponseModel"
+      }
+    },
+    "promoteResponseModel": {
+      "type": "object",
+      "properties": {
+        "fileVersionId": {
+          "type": "string"
+        },
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "xml": {
+        "name": "PromoteResponseModel"
+      }
+    },
+    "deleteSchedulePublishRequest": {
+      "type": "object",
+      "properties": {
+        "TargetFolderId": {
+          "type": "string"
+        },
+        "FileVersionId": {
+          "type": "string"
+        },
+        "ProfileVersionId": {
+          "type": "string"
+        }
+      }
+    },
+    "changeSchedulePublishTimeRequest": {
+      "type": "object",
+      "properties": {
+        "PublishTime": {
+          "type": "string"
+        },
+        "TimeZone": {
+          "type": "string"
+        }
+      }
+    },
+    "changeSchedulePublishLocationRequest": {
+      "type": "object",
+      "properties": {
+        "SourceFolderId": {
+          "type": "string"
+        },
+        "DestFolderId": {
+          "type": "string"
+        }
+      }
+    },
+    "changeFileSchedulePublishServiceModel": {
+      "type": "object",
+      "properties": {
+        "FileVersionId": {
+          "type": "string"
+        },
+        "PublishTaskId": {
+          "type": "string"
+        },
+        "Status": {
+          "type": "boolean",
+          "description": "operation state. If the status is true, delete sccessfully. Otherwise fail."
+        }
+      }
+    },
+    "customPropertyRequest": {
+      "type": "object",
+      "properties": {
+        "Values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "updateCustomPropertyService": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "systemIdentityServiceModel": {
+      "type": "object",
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Type": {
+          "type": "string",
+          "enum": [
+            "User",
+            "UserGroup"
+          ]
+        },
+        "Name": {
+          "type": "string"
+        },
+        "FirstName": {
+          "type": "string"
+        },
+        "LastName": {
+          "type": "string"
+        },
+        "PhotoThumbnailId": {
+          "type": "string"
+        }
+      }
+    },
+    "updateOwnerServiceModel": {
+      "type": "object",
+      "properties": {
+        "OwnerId": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
